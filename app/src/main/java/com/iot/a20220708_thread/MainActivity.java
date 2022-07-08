@@ -2,7 +2,9 @@ package com.iot.a20220708_thread;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -11,11 +13,27 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private int number = 0;
 
+    private long count = 10000;
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            ((TextView)findViewById(R.id.textView2)).setText(count+"");
+            count -= 1;
+
+            if (count == 0) {
+                count = 10000;
+            }else {
+                handler.postDelayed(runnable, 1000);
+            }
+
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = (TextView)findViewById(R.id.textView);
+        textView = (TextView)findViewById(R.id.textView1);
 
         thread = new Thread(){
             @Override
@@ -39,5 +57,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         thread.start();
+        handler.post(runnable);
     }
 }
